@@ -1,0 +1,247 @@
+@using SyncTally.Web.Services.Interfaces
+@inject IAuthService Auth
+@{
+    string title = ViewData["Title"] as string ?? "SyncTally";
+    string fullTitle = title.Contains("SyncTally") ? title : title + " – SyncTally";
+    string description = ViewData["Description"] as string
+        ?? "SyncTally lets distributors take orders, bill, deliver and collect payments from a phone – and sync everything back to Tally.";
+    string ctrl = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+    var crumbs = ViewData["Crumbs"] as List<Crumb>;
+    string Cur(string c) => string.Equals(ctrl, c, StringComparison.OrdinalIgnoreCase) ? "page" : null!;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@fullTitle</title>
+    <meta name="description" content="@description">
+    <link rel="icon" type="image/x-icon" href="~/images/SyncTallyIcon.ico" asp-append-version="true" />
+@*     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f1f3d'/%3E%3Cpath d='M18 22h28M18 32h28M18 42h16' stroke='%2322d3a5' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+ *@    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
+        <style>
+            .brand-lockup,
+            .login-logo {
+                position: relative;
+                z-index: 2;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+                .brand-lockup .logo-icon,
+                .login-logo .logo-icon {
+                    width: 48px;
+                    height: 48px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex: 0 0 48px;
+                    overflow: hidden;
+                    border-radius: 13px;
+                    background: #ffffff;
+                    border: 1px solid rgba(255, 255, 255, .18);
+                    box-shadow: 0 8px 22px rgba(0, 0, 0, .18);
+                }
+
+            .synctally-logo-img {
+                width: 100%;
+                height: 100%;
+                display: block;
+                object-fit: contain;
+            }
+
+            .brand-lockup .logo-text,
+            .login-logo .logo-text {
+                font-size: 28px;
+                line-height: 1;
+                font-weight: 800;
+                letter-spacing: -.7px;
+            }
+
+            .brand-lockup .logo-text {
+                color: #ffffff;
+            }
+
+                .brand-lockup .logo-text span {
+                    color: #60a5fa;
+                }
+
+            .login-logo .logo-text {
+                color: #111827;
+            }
+
+                .login-logo .logo-text span {
+                    color: var(--st-primary);
+                }
+    </style>
+    <script>
+        /* Apply the saved theme before first paint to avoid a flash */
+        (function () {
+            try {
+                var t = localStorage.getItem('synctally_theme') ||
+                    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', t);
+            } catch (e) { }
+        })();
+    </script>
+</head>
+<body>
+    <a class="skip-link" href="#app">Skip to main content</a>
+
+    <header id="site-header" class="site-header">
+        <div class="container nav">
+            <a class="brand" asp-controller="Home" asp-action="Index">@*<span class="brand-mark" aria-hidden="true"></span>*@
+                <div class="brand-lockup">
+                    <div class="logo-icon">
+                        <img src="~/images/SyncTallyIcon.png"
+                             asp-append-version="true"
+                             alt="Sync Tally"
+                             class="synctally-logo-img" />
+                    </div>
+                    <div class="logo-text">Sync<span>Tally</span></div>
+                </div>
+                @*SyncTally*@
+            </a>
+            <ul class="nav-links" id="nav-links" aria-label="Main">
+                <vc:nav-menu />
+                <li><a asp-controller="Demo" asp-action="Index" aria-current="@Cur("Demo")">Demo</a></li>
+                <li><a asp-controller="Pricing" asp-action="Index" aria-current="@Cur("Pricing")">Pricing</a></li>
+                <li><a asp-controller="Partners" asp-action="Index" aria-current="@Cur("Partners")">Partners</a></li>
+                <li><a asp-controller="Blog" asp-action="Index" aria-current="@Cur("Blog")">Blog</a></li>
+                <li class="only-mobile"><a asp-controller="Connector" asp-action="Index" aria-current="@Cur("Connector")">🔌 Tally Connector</a></li>
+                <li class="only-mobile"><a asp-controller="Trial" asp-action="Index">Start free trial</a></li>
+                <li class="only-mobile"><button type="button" class="nav-btn" data-act="wa-chat">💬 Chat on WhatsApp</button></li>
+            </ul>
+            <div class="nav-tools">
+                <a class="nav-ico-link hide-md" asp-controller="Connector" asp-action="Index"><span aria-hidden="true">🔌</span> Tally Connector</a>
+                <a class="pill pill-white hide-sm" asp-controller="Trial" asp-action="Index">Start free trial</a>
+                <button type="button" class="pill pill-wa hide-sm" data-act="wa-chat"><span aria-hidden="true">💬</span> Chat on WhatsApp</button>
+                <button type="button" class="icon-btn" data-act="theme" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+                @*<a class="pill pill-ghost hide-lg" href="@Auth.LoginUrl">Sign in</a>*@
+                <button type="button" class="icon-btn hamburger" data-act="menu" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-links">☰</button>
+            </div>
+        </div>
+    </header>
+
+    @if (crumbs != null && crumbs.Count > 0)
+    {
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+            <ol>
+                @foreach (var c in crumbs)
+                {
+                    <li>
+                        @if (c.Url != null) { <a href="@c.Url">@c.Label</a> }
+                        else { <span aria-current="page">@c.Label</span> }
+                    </li>
+                }
+            </ol>
+        </nav>
+    }
+
+    <main id="app" tabindex="-1">
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div>
+                <a class="brand" asp-controller="Home" asp-action="Index">
+                    @*<span class="brand-mark" aria-hidden="true"></span>SyncTally*@
+                    <div class="brand-lockup">
+                        <div class="logo-icon">
+                            <img src="~/images/SyncTallyIcon.png"
+                                 asp-append-version="true"
+                                 alt="Sync Tally"
+                                 class="synctally-logo-img" />
+                        </div>
+                        <div class="logo-text">Sync<span>Tally</span></div>
+                    </div>
+                </a>
+                <p class="muted-light">Order taking, billing and collections for Indian distributors – synced with Tally.</p>
+            </div>
+            <nav aria-label="Product">
+                <h2>Product</h2>
+                <ul>
+                    <li><a asp-controller="Features" asp-action="Index">Features</a></li>
+                    <li><a asp-controller="Demo" asp-action="Index">Try the demo</a></li>
+                    <li><a asp-controller="Pricing" asp-action="Index">Pricing</a></li>
+                    <li><a asp-controller="Connector" asp-action="Index">Tally Connector</a></li>
+                    <li><a asp-controller="Features" asp-action="Details" asp-route-id="outstanding-receivables">Receivables</a></li>
+                    <li><a asp-controller="Features" asp-action="Details" asp-route-id="ledger-on-whatsapp">WhatsApp ledger</a></li>
+                </ul>
+            </nav>
+            <nav aria-label="Company">
+                <h2>Company</h2>
+                <ul>
+                    <li><a asp-controller="Home" asp-action="About">About</a></li>
+                    <li><a asp-controller="Partners" asp-action="Index">Partners</a></li>
+                    <li><a asp-controller="Blog" asp-action="Index">Blog</a></li>
+                    <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a href="@Auth.LoginUrl">Sign in</a></li>
+                    <li><a asp-controller="Trial" asp-action="Index">Start free trial</a></li>
+                </ul>
+            </nav>
+            <nav aria-label="Legal">
+                <h2>Legal</h2>
+                <ul>
+                    <li><a asp-controller="Home" asp-action="About" asp-fragment="data-safety">Data safety</a></li>
+                    <li><a asp-controller="Home" asp-action="Contact">Support</a></li>
+                    <li><a asp-controller="Home" asp-action="Index">Privacy (demo)</a></li>
+                    <li><a asp-controller="Home" asp-action="Index">Terms (demo)</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="container footer-bottom">© <span id="year">@DateTime.Now.Year</span> SyncTally. All rights reserved.</div>
+    </footer>
+
+    <div id="toast-root" class="toast-root" aria-live="polite" aria-atomic="false"></div>
+    <div id="modal-root"></div>
+    <div id="af-token" hidden>@Html.AntiForgeryToken()</div>
+    @if (TempData["Toast"] is string flash)
+    {
+        <div id="flash-toast" hidden data-message="@flash"></div>
+    }
+
+    <button type="button" class="wa-fab no-print" data-act="wa-chat" aria-label="Chat with SyncTally on WhatsApp">
+        <span aria-hidden="true">💬</span><span class="wa-fab-label">Chat on WhatsApp</span>
+    </button>
+
+    <template id="chat-template">
+        <form novalidate id="chat-form" data-url="@Url.Action("Lead", "WhatsApp")">
+            <p class="muted" style="margin-top:0">Tell us a little about what you need and we'll continue the conversation on WhatsApp.</p>
+            <div class="field">
+                <label for="wa-name">Your name</label>
+                <input id="wa-name" name="name" autocomplete="name" maxlength="100">
+                <p class="err" data-err="name" role="alert"></p>
+            </div>
+            <div class="field">
+                <label for="wa-phone">Your mobile number</label>
+                <input id="wa-phone" name="phone" type="tel" inputmode="numeric" maxlength="10" autocomplete="tel-national">
+                <p class="err" data-err="phone" role="alert"></p>
+            </div>
+            <div class="field">
+                <label for="wa-topic">I'd like to…</label>
+                <select id="wa-topic" name="topic">
+                    @foreach (var t in ChatLeadViewModel.Topics)
+                    {
+                        <option value="@t">@t</option>
+                    }
+                </select>
+            </div>
+            <div class="field">
+                <label for="wa-msg">Message (optional)</label>
+                <textarea id="wa-msg" name="msg" rows="3" maxlength="500"></textarea>
+            </div>
+            <div class="modal-foot">
+                <button type="button" class="btn btn-outline" data-close>Cancel</button>
+                <button class="btn btn-wa spinner-btn" type="submit">💬 Start chat</button>
+            </div>
+        </form>
+    </template>
+
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

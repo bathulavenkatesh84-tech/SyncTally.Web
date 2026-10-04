@@ -1,0 +1,61 @@
+@model FeatureListViewModel
+@functions {
+    static (string Css, string Text) Badge(string status) => status switch
+    {
+        "live" => ("ok", "Live in this demo"),
+        "sim" => ("warn", "Simulated in demo"),
+        _ => ("", "Full product")
+    };
+}
+<div class="page container">
+    <div class="section-head" style="margin-top:0">
+        <h1>Everything SyncTally does</h1>
+        <p>From the first order to the last receipt – grouped the way your day actually runs.</p>
+        <p>
+            <span class="badge ok">Live in this demo</span>
+            <span class="badge warn">Simulated in demo</span>
+            <span class="badge">Full product</span>
+        </p>
+    </div>
+
+    <form method="get" asp-controller="Features" asp-action="Index" class="toolbar" role="search">
+        <label class="sr-only" for="f-q">Search features</label>
+        <input class="input grow" id="f-q" name="q" value="@Model.Q" placeholder="Search features…" maxlength="60">
+        <label class="sr-only" for="f-status">Filter by status</label>
+        <select class="input" id="f-status" name="status" data-autosubmit>
+            <option value="">All statuses</option>
+            <option value="live" selected="@(Model.Status == "live")">Live in this demo</option>
+            <option value="sim" selected="@(Model.Status == "sim")">Simulated in demo</option>
+            <option value="mobile" selected="@(Model.Status == "mobile")">Full product</option>
+        </select>
+        <button class="btn" type="submit">Search</button>
+        @if (!string.IsNullOrWhiteSpace(Model.Q) || !string.IsNullOrWhiteSpace(Model.Status))
+        {
+            <a class="btn btn-outline" asp-action="Index">Clear</a>
+        }
+    </form>
+    <p class="muted" role="status">@Model.Total feature@(Model.Total == 1 ? "" : "s") found</p>
+
+    @if (Model.Groups.Count == 0)
+    {
+        <div class="empty"><span class="big" aria-hidden="true">🔎</span><p>No features match your search.</p></div>
+    }
+    @foreach (var g in Model.Groups)
+    {
+        <section style="margin-bottom:34px">
+            <h2 style="font-size:1.2rem">@g.Title</h2>
+            <div class="grid grid-3">
+                @foreach (var f in g.Features)
+                {
+                    var b = Badge(f.LiveStatus);
+                    <a class="card feature feature-link" asp-action="Details" asp-route-id="@f.Slug">
+                        <div class="ico" aria-hidden="true">@f.Icon</div>
+                        <h3>@f.Title</h3>
+                        <p>@f.Lead</p>
+                        <p style="margin-top:10px"><span class="badge @b.Css">@b.Text</span></p>
+                    </a>
+                }
+            </div>
+        </section>
+    }
+</div>

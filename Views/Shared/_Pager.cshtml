@@ -1,0 +1,43 @@
+@model PagerViewModel
+@if (Model.Pages > 1)
+{
+    string Href(int p)
+    {
+        var rv = new RouteValueDictionary();
+        foreach (var kv in Model.Query)
+        {
+            if (!string.IsNullOrWhiteSpace(kv.Value)) { rv[kv.Key] = kv.Value; }
+        }
+        rv["page"] = p;
+        return Url.Action(Model.Action, Model.Controller, rv) ?? "#";
+    }
+    <nav class="pager" aria-label="Pagination">
+        @if (Model.Page > 1)
+        {
+            <a href="@Href(Model.Page - 1)" rel="prev" aria-label="Previous page">‹ Prev</a>
+        }
+        else
+        {
+            <span class="pg" aria-disabled="true">‹ Prev</span>
+        }
+        @for (int i = 1; i <= Model.Pages; i++)
+        {
+            if (i == Model.Page)
+            {
+                <a href="@Href(i)" aria-current="page" aria-label="Page @i">@i</a>
+            }
+            else
+            {
+                <a href="@Href(i)" aria-label="Page @i">@i</a>
+            }
+        }
+        @if (Model.Page < Model.Pages)
+        {
+            <a href="@Href(Model.Page + 1)" rel="next" aria-label="Next page">Next ›</a>
+        }
+        else
+        {
+            <span class="pg" aria-disabled="true">Next ›</span>
+        }
+    </nav>
+}

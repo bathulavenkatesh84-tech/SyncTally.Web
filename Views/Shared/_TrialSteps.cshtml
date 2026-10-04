@@ -1,0 +1,13 @@
+@model int
+@{
+    var steps = new[] { "Your details", "Verify email", "Start using SyncTally" };
+}
+<ol class="trial-steps" aria-label="Sign-up progress">
+    @for (int i = 0; i < steps.Length; i++)
+    {
+        int n = i + 1;
+        <li class="@(n < Model ? "done" : n == Model ? "current" : "")" aria-current="@(n == Model ? "step" : null)">
+            <b>@(n < Model ? "✓" : n.ToString())</b><span>@steps[i]</span>
+        </li>
+    }
+</ol>

@@ -1,0 +1,41 @@
+@model ContactPageViewModel
+<div class="page container">
+    <div class="grid grid-2" style="align-items:start">
+        <div>
+            <h1>Talk to us</h1>
+            <p class="muted">Questions about pricing, Tally setup or a live walkthrough? Send us a note – we reply within one business day.</p>
+            <ul class="list-plain">
+                <li><span>📧 Email</span><b>@Model.SupportEmail</b></li>
+                <li><span>📞 Phone</span><b>@Model.SupportPhone</b></li>
+                <li><span>🕘 Hours</span><b>@Model.SupportHours</b></li>
+            </ul>
+        </div>
+        <form class="card" method="post" asp-controller="Home" asp-action="Contact" novalidate id="contact-form">
+            <h2 style="font-size:1.2rem">Send a message</h2>
+            <div asp-validation-summary="ModelOnly" class="err-list"></div>
+            <div class="field">
+                <label asp-for="Form.Name"></label>
+                <input asp-for="Form.Name" autocomplete="name" />
+                <span asp-validation-for="Form.Name" class="err"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Form.Email"></label>
+                <input asp-for="Form.Email" type="email" autocomplete="email" />
+                <span asp-validation-for="Form.Email" class="err"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Form.Topic"></label>
+                <select asp-for="Form.Topic" asp-items="@(ContactViewModel.Topics.Select(t => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(t, t)))"></select>
+                <span asp-validation-for="Form.Topic" class="err"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Form.Message"></label>
+                <textarea asp-for="Form.Message" rows="5"></textarea>
+                <p class="hint">At least 10 characters.</p>
+                <span asp-validation-for="Form.Message" class="err"></span>
+            </div>
+            <button class="btn btn-block" type="submit">Send message</button>
+        </form>
+    </div>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

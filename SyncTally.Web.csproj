@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>SyncTally.Web</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Plain ADO.NET provider for PostgreSQL. No Entity Framework anywhere. -->
+    <PackageReference Include="Npgsql" Version="8.0.5" />
+    <!-- tallywebapp verifies logins with BCrypt, so trial users must be stored with a BCrypt hash. -->
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Database\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

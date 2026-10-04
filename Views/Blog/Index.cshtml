@@ -1,0 +1,97 @@
+@model BlogListViewModel
+@{
+    var pager = new PagerViewModel
+    {
+        Controller = "Blog", Action = "Index", Page = Model.Result.Page, Pages = Model.Result.Pages,
+        Query = new Dictionary<string, string?> { ["q"] = Model.Q, ["tag"] = Model.Tag, ["sort"] = Model.Sort }
+    };
+    bool filtered = !string.IsNullOrWhiteSpace(Model.Q) || !string.IsNullOrWhiteSpace(Model.Tag);
+    var items = Model.Featured == null ? Model.Result.Items : Model.Result.Items.Where(x => x.Slug != Model.Featured.Slug).ToList();
+    int Hue(string tag) => Math.Abs(tag.Aggregate(7, (h, c) => h * 31 + c)) % 360;
+}
+<section class="blog-hero">
+    <div class="container">
+        <span class="eyebrow">SyncTally blog</span>
+        <h1>Ideas that help distributors<br>sell, bill and collect faster</h1>
+        <p>Practical guides on Tally, field sales, collections and compliance, written for people who run the counter, not the code.</p>
+        <form method="get" asp-controller="Blog" asp-action="Index" class="blog-search" role="search">
+            <input type="hidden" name="tag" value="@Model.Tag">
+            <input type="hidden" name="sort" value="@Model.Sort">
+            <label class="sr-only" for="b-q">Search articles</label>
+            <input class="input" id="b-q" name="q" value="@Model.Q" placeholder="Search articles, e.g. ageing, schemes, GST…" maxlength="60">
+            <button class="btn" type="submit">Search</button>
+        </form>
+    </div>
+</section>
+
+<div class="page container blog-wrap">
+    @if (Model.Featured != null)
+    {
+        var f = Model.Featured;
+        <a class="blog-featured" asp-action="Details" asp-route-id="@f.Slug" style="--h:@Hue(f.Tag)">
+            <div class="blog-cover big"><span class="ico" aria-hidden="true">@f.Icon</span></div>
+            <div class="blog-featured-body">
+                <span class="chip-tag">Featured · @f.Tag</span>
+                <h2>@f.Title</h2>
+                <p>@f.Excerpt</p>
+                <div class="blog-meta"><span>@f.Author</span><span>@Fmt.Date(f.PublishedOn)</span><span>@f.ReadMinutes min read</span></div>
+                <span class="read-more">Read the article →</span>
+            </div>
+        </a>
+    }
+
+    <div class="blog-bar">
+        <nav class="chips" aria-label="Categories">
+            <a class="chip @(string.IsNullOrWhiteSpace(Model.Tag) ? "on" : "")" asp-action="Index" asp-route-q="@Model.Q" asp-route-sort="@Model.Sort">All <em>@Model.AllCount</em></a>
+            @foreach (var c in Model.Categories)
+            {
+                <a class="chip @(c.Name == Model.Tag ? "on" : "")" asp-action="Index" asp-route-tag="@c.Name" asp-route-q="@Model.Q" asp-route-sort="@Model.Sort">@c.Name <em>@c.Count</em></a>
+            }
+        </nav>
+        <form method="get" asp-controller="Blog" asp-action="Index" class="blog-sort">
+            <input type="hidden" name="q" value="@Model.Q">
+            <input type="hidden" name="tag" value="@Model.Tag">
+            <label class="sr-only" for="b-sort">Sort by</label>
+            <select class="input" id="b-sort" name="sort" data-autosubmit>
+                <option value="newest" selected="@(Model.Sort == "newest")">Newest first</option>
+                <option value="oldest" selected="@(Model.Sort == "oldest")">Oldest first</option>
+                <option value="popular" selected="@(Model.Sort == "popular")">Most read</option>
+                <option value="title" selected="@(Model.Sort == "title")">Title A–Z</option>
+            </select>
+        </form>
+    </div>
+    <p class="muted" role="status">
+        @Model.Result.Total article@(Model.Result.Total == 1 ? "" : "s")@(filtered ? " found" : "")
+        @if (filtered) { <a class="clear-link" asp-action="Index">Clear filters</a> }
+    </p>
+
+    @if (Model.Result.Items.Count == 0)
+    {
+        <div class="empty"><span class="big" aria-hidden="true">📰</span><p>No articles match your search.</p><a class="btn" asp-action="Index">Show all articles</a></div>
+    }
+    else
+    {
+        <div class="blog-grid">
+            @foreach (var b in items)
+            {
+                <a class="blog-card" asp-action="Details" asp-route-id="@b.Slug" style="--h:@Hue(b.Tag)">
+                    <div class="blog-cover"><span class="ico" aria-hidden="true">@b.Icon</span><span class="chip-tag">@b.Tag</span></div>
+                    <div class="blog-card-body">
+                        <h2>@b.Title</h2>
+                        <p>@b.Excerpt</p>
+                        <div class="blog-meta"><span>@b.Author</span><span>@Fmt.Date(b.PublishedOn)</span><span>@b.ReadMinutes min</span></div>
+                    </div>
+                </a>
+            }
+        </div>
+        <partial name="_Pager" model="pager" />
+    }
+
+    <section class="blog-cta">
+        <div>
+            <h2>Try it on your own counter</h2>
+            <p>Take orders on the phone, post them to Tally and chase payments from one place. Free for 15 days, no card needed.</p>
+        </div>
+        <a class="btn" asp-controller="Trial" asp-action="Index">Start free trial</a>
+    </section>
+</div>

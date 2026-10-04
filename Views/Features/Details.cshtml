@@ -1,0 +1,172 @@
+@model FeatureDetailViewModel
+@inject SyncTally.Web.Services.Interfaces.IAuthService Auth
+@{
+    var f = Model.Feature;
+    (string Css, string Text) badge = f.LiveStatus switch
+    {
+        "live" => ("ok", "Live in this demo"),
+        "sim" => ("warn", "Simulated in demo"),
+        _ => ("", "Full product")
+    };
+}
+<section class="hero compact feature-hero">
+    <div class="container hero-grid">
+        <div>
+            <span class="eyebrow">@f.GroupTitle</span>
+            <h1><span class="h1-ico" aria-hidden="true">@f.Icon</span> @f.Title</h1>
+            <p class="lead">@f.Lead</p>
+            <p><span class="badge @badge.Css">@badge.Text</span></p>
+            <div class="btn-row">
+                <a class="btn" asp-controller="Trial" asp-action="Index">Start 15-day free trial</a>
+                @if (Model.HasApp)
+                {
+                    <a class="btn btn-outline" href="@Auth.LoginUrl">@Model.AppLabel</a>
+                }
+                <button type="button" class="btn btn-outline" data-act="wa-chat">💬 Chat on WhatsApp</button>
+            </div>
+            <p class="muted-light" style="font-size:.88rem;margin-top:12px">No card needed · set up in under an hour</p>
+        </div>
+        <div class="phone" aria-hidden="true">
+            <div class="phone-screen">
+                <h3>@f.Title</h3>
+                @for (int i = 0; i < Model.Steps.Count; i++)
+                {
+                    <div class="phone-row"><span>@(i + 1). @Model.Steps[i]</span><b>✓</b></div>
+                }
+                <div class="phone-btn">@f.Icon Done</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@if (Model.Stats.Count > 0)
+{
+    <section class="stats-strip" aria-label="At a glance">
+        <div class="container stats-grid">
+            @foreach (var s in Model.Stats)
+            {
+                <div class="stat-tile"><b>@s.Title</b><span>@s.Text</span></div>
+            }
+        </div>
+    </section>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.Problem))
+{
+    <section class="section">
+        <div class="container">
+            <div class="section-head">
+                <h2>From daily friction to a clean workflow</h2>
+                <p>Here is the problem @f.Title solves for distributors.</p>
+            </div>
+            <div class="ps-grid">
+                <article class="ps-card before">
+                    <span class="ps-tag">Without SyncTally</span>
+                    <p>@Model.Problem</p>
+                </article>
+                <div class="ps-arrow" aria-hidden="true">→</div>
+                <article class="ps-card after">
+                    <span class="ps-tag">With SyncTally</span>
+                    <p>@Model.Solution</p>
+                </article>
+            </div>
+        </div>
+    </section>
+}
+
+@if (Model.Benefits.Count > 0)
+{
+    <section class="section alt">
+        <div class="container">
+            <div class="section-head">
+                <h2>Why distributors love it</h2>
+                <p>The details that make @f.Title worth using every day.</p>
+            </div>
+            <div class="benefit-grid">
+                @for (int i = 0; i < Model.Benefits.Count; i++)
+                {
+                    <article class="benefit">
+                        <span class="benefit-n" aria-hidden="true">@(i + 1)</span>
+                        <h3>@Model.Benefits[i].Title</h3>
+                        <p>@Model.Benefits[i].Text</p>
+                    </article>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <h2>How it works</h2>
+            <p>@Model.Steps.Count simple steps – no training manual needed.</p>
+        </div>
+        <ol class="timeline">
+            @for (int i = 0; i < Model.Steps.Count; i++)
+            {
+                <li>
+                    <span class="tl-n">@(i + 1)</span>
+                    <p>@Model.Steps[i]</p>
+                </li>
+            }
+        </ol>
+        @if (Model.Points.Count > 0)
+        {
+            <div class="card included">
+                <h3>What's included</h3>
+                <ul class="check-list cols-2">
+                    @foreach (var p in Model.Points) { <li>@p</li> }
+                </ul>
+            </div>
+        }
+    </div>
+</section>
+
+@if (Model.Faqs.Count > 0)
+{
+    <section class="section alt">
+        <div class="container" style="max-width:820px">
+            <div class="section-head"><h2>Questions about @f.Title</h2></div>
+            @foreach (var q in Model.Faqs)
+            {
+                <details class="faq">
+                    <summary>@q.Title</summary>
+                    <p>@q.Text</p>
+                </details>
+            }
+        </div>
+    </section>
+}
+
+@if (Model.Related.Count > 0)
+{
+    <section class="section">
+        <div class="container">
+            <h2 style="font-size:1.2rem">More in “@f.GroupTitle”</h2>
+            <div class="related-grid">
+                @foreach (var r in Model.Related)
+                {
+                    <a class="card feature feature-link" asp-action="Details" asp-route-id="@r.Slug">
+                        <div class="ico" aria-hidden="true">@r.Icon</div>
+                        <h3>@r.Title</h3>
+                        <p>@r.Lead</p>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<section class="section">
+    <div class="container">
+        <div class="cta">
+            <h2>Try @f.Title free for 15 days</h2>
+            <p>Every feature switched on. No card, no commitment – we'll help you connect Tally.</p>
+            <div class="btn-row" style="justify-content:center">
+                <a class="btn" asp-controller="Trial" asp-action="Index">Start 15-day free trial</a>
+                <a class="btn btn-outline" style="color:#fff" asp-controller="Features" asp-action="Index">Explore all features</a>
+            </div>
+        </div>
+    </div>
+</section>

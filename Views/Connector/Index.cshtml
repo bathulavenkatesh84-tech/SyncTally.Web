@@ -1,0 +1,48 @@
+@inject SyncTally.Web.Services.Interfaces.IAuthService Auth
+<section class="hero compact">
+    <div class="container hero-grid">
+        <div>
+            <span class="eyebrow">🔌 Tally Connector</span>
+            <h1>Your Tally, on every salesman's phone.</h1>
+            <p class="lead">A small connector on the Tally PC pairs with SyncTally, reads your masters and posts vouchers back – no remote desktop, no open ports.</p>
+            <div class="btn-row">
+                <a class="btn" asp-action="Download">⬇ Download Tally Connector (.exe)</a>
+                <a class="btn btn-outline" asp-action="Config">Config file (.json)</a>
+                <a class="btn btn-outline" asp-action="Guide">Setup guide (.txt)</a>
+            </div>
+            <p class="muted-light" style="font-size:.88rem;margin-top:12px">Windows 10/11 with .NET Framework 4.8. Unzip, run Tally Sync Config.exe, and follow the setup guide.</p>
+        </div>
+        <div class="phone" aria-hidden="true">
+            <div class="phone-screen">
+                <h3>Tally ⇄ SyncTally</h3>
+                <div class="phone-row"><span>Items read</span><b>16</b></div>
+                <div class="phone-row"><span>Ledgers read</span><b>8</b></div>
+                <div class="phone-row"><span>Vouchers posted</span><b>9</b></div>
+                <div class="phone-btn">● Connected</div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="page container">
+    <ol class="grid grid-3 step-list" style="list-style:none;padding:0">
+        <li class="step-card"><b class="step-n">1</b><div><h3>Install on the Tally PC</h3><p class="muted" style="margin:0">Run the connector next to Tally Prime / ERP 9 and enable Tally's HTTP/XML port (default 9000).</p></div></li>
+        <li class="step-card"><b class="step-n">2</b><div><h3>Pair with a code</h3><p class="muted" style="margin:0">Enter the 6-digit pairing code from SyncTally once. The link is outbound-only.</p></div></li>
+        <li class="step-card"><b class="step-n">3</b><div><h3>Sync</h3><p class="muted" style="margin:0">Masters come in, invoices and receipts go back. Every sync is logged.</p></div></li>
+    </ol>
+
+    <div class="grid grid-2" style="margin-top:28px;align-items:start">
+        <section class="card center">
+            <h2 style="font-size:1.2rem">Pair your connector</h2>
+            <p class="muted">Sign in to generate a pairing code, test the link and sync vouchers.</p>
+            <a class="btn" href="@Auth.LoginUrl">Sign in to pair</a>
+        </section>
+        <section class="card">
+            <h2 style="font-size:1.2rem">Import masters from CSV</h2>
+            <p class="muted">Bring items and ledgers (retailers) exported from Tally into SyncTally. Use these templates for the right columns.</p>
+            <div class="btn-row">
+                <a class="btn btn-outline btn-sm" asp-action="SampleItems">Sample items.csv</a>
+                <a class="btn btn-outline btn-sm" asp-action="SampleLedgers">Sample ledgers.csv</a>
+            </div>
+        </section>
+    </div>
+</div>

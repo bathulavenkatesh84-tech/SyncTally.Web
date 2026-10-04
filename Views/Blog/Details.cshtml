@@ -1,0 +1,105 @@
+@model BlogDetailViewModel
+@using System.Text.RegularExpressions
+@{
+    int Hue(string tag) => Math.Abs(tag.Aggregate(7, (h, c) => h * 31 + c)) % 360;
+    string Slugify(string t) => Regex.Replace(t.ToLowerInvariant(), "[^a-z0-9]+", "-").Trim('-');
+    var toc = Model.Body.Where(b => b.StartsWith("## ")).Select(b => b.Substring(3).Trim()).ToList();
+    var shareUrl = Uri.EscapeDataString($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}");
+    var shareText = Uri.EscapeDataString(Model.Post.Title);
+}
+<div class="read-progress" aria-hidden="true"><span id="read-bar"></span></div>
+
+<header class="post-hero" style="--h:@Hue(Model.Post.Tag)">
+    <div class="container narrow">
+        <a class="chip-tag" asp-action="Index" asp-route-tag="@Model.Post.Tag">@Model.Post.Icon @Model.Post.Tag</a>
+        <h1>@Model.Post.Title</h1>
+        <p class="lede">@Model.Post.Excerpt</p>
+        <div class="byline">
+            <span class="avatar" aria-hidden="true">@(Model.Post.Author.Length > 0 ? Model.Post.Author[0].ToString() : "S")</span>
+            <div>
+                <strong>@Model.Post.Author</strong>
+                <small>@Model.AuthorRole · @Fmt.Date(Model.Post.PublishedOn) · @Model.Post.ReadMinutes min read · @Model.Views view@(Model.Views == 1 ? "" : "s")</small>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="page container post-layout">
+    <article class="post-body" id="post-body">
+        @{
+            bool inList = false;
+            foreach (var b in Model.Body)
+            {
+                bool bullet = b.StartsWith("- ");
+                if (inList && !bullet) { @:</ul>
+                    inList = false; }
+                if (bullet)
+                {
+                    if (!inList) { @:<ul>
+                        inList = true; }
+                    <li>@b.Substring(2)</li>
+                }
+                else if (b.StartsWith("## "))
+                {
+                    var h = b.Substring(3).Trim();
+                    <h2 id="@Slugify(h)">@h</h2>
+                }
+                else if (b.StartsWith("> "))
+                {
+                    <blockquote class="callout">@b.Substring(2)</blockquote>
+                }
+                else
+                {
+                    <p>@b</p>
+                }
+            }
+            if (inList) { @:</ul>
+            }
+        }
+
+        <div class="post-share">
+            <strong>Share this article</strong>
+            <a class="btn btn-outline" target="_blank" rel="noopener" href="https://wa.me/?text=@shareText%20@shareUrl">WhatsApp</a>
+            <a class="btn btn-outline" target="_blank" rel="noopener" href="https://www.linkedin.com/sharing/share-offsite/?url=@shareUrl">LinkedIn</a>
+            <button type="button" class="btn btn-outline" id="copy-link">Copy link</button>
+        </div>
+    </article>
+
+    <aside class="post-side">
+        @if (toc.Count > 0)
+        {
+            <nav class="toc" aria-label="In this article">
+                <strong>In this article</strong>
+                <ol>
+                    @foreach (var t in toc) { <li><a href="#@Slugify(t)">@t</a></li> }
+                </ol>
+            </nav>
+        }
+        <div class="side-cta">
+            <strong>Try SyncTally free</strong>
+            <p>15 days, no card. Orders, outstanding and reminders in one app.</p>
+            <a class="btn" asp-controller="Trial" asp-action="Index">Start free trial</a>
+        </div>
+    </aside>
+</div>
+
+@if (Model.Related.Count > 0)
+{
+    <section class="container related">
+        <h2>Keep reading</h2>
+        <div class="blog-grid">
+            @foreach (var b in Model.Related)
+            {
+                <a class="blog-card" asp-action="Details" asp-route-id="@b.Slug" style="--h:@Hue(b.Tag)">
+                    <div class="blog-cover"><span class="ico" aria-hidden="true">@b.Icon</span><span class="chip-tag">@b.Tag</span></div>
+                    <div class="blog-card-body">
+                        <h3>@b.Title</h3>
+                        <p>@b.Excerpt</p>
+                        <div class="blog-meta"><span>@b.Author</span><span>@Fmt.Date(b.PublishedOn)</span><span>@b.ReadMinutes min</span></div>
+                    </div>
+                </a>
+            }
+        </div>
+        <p style="margin-top:22px"><a class="btn btn-outline" asp-action="Index">← All articles</a></p>
+    </section>
+}

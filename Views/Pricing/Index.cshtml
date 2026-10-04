@@ -1,0 +1,29 @@
+@model List<PlanViewModel>
+@inject SyncTally.Web.Services.Interfaces.IAuthService Auth
+<div class="page container center">
+    <h1>Simple yearly pricing</h1>
+    <p class="muted">All plans include a 15-day free trial. GST extra.</p>
+    <div class="switch" role="group" aria-label="Billing term">
+        <button type="button" data-term="1" aria-pressed="true">1 year</button>
+        <button type="button" data-term="3" aria-pressed="false">3 years (save 20%)</button>
+    </div>
+    <div id="plans" class="grid grid-4" style="text-align:left">
+        @foreach (var p in Model)
+        {
+            <article class="card plan @(p.IsPopular ? "popular" : "")" data-price1y="@p.Price1Y.ToString("0", System.Globalization.CultureInfo.InvariantCulture)">
+                @if (p.IsPopular) { <span class="badge ok pop-tag">Most popular</span> }
+                <h2 style="font-size:1.2rem;margin:0">@p.Name</h2>
+                <div class="price"><span data-price>@Fmt.Money(p.Price1Y)</span><small> / year</small></div>
+                <p class="muted" style="margin:0" data-billing>Billed yearly</p>
+                <ul>
+                    @foreach (var f in p.Features) { <li>@f</li> }
+                </ul>
+                <a class="btn @(p.IsPopular ? "" : "btn-outline")" asp-controller="Trial" asp-action="Index" asp-route-plan="@p.Name">Try @p.Name free for 15 days</a>
+            </article>
+        }
+    </div>
+    <div class="card" style="margin-top:28px;text-align:left">
+        <h2 style="font-size:1.2rem">Add-ons</h2>
+        <p class="muted" style="margin:0">Payment collection links · Extra salesmen · WhatsApp message packs · Onboarding &amp; training. <a asp-controller="Home" asp-action="Contact">Ask for a quote</a>.</p>
+    </div>
+</div>

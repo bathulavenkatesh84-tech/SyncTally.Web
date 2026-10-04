@@ -1,0 +1,41 @@
+@model TrialVerifyViewModel
+<div class="page container">
+    <partial name="_TrialSteps" model="2" />
+    <div class="trial-wrap single">
+        <div class="card trial-form">
+            <h2>Check your email</h2>
+            <p class="muted" style="margin-top:0">We sent a 6-digit code to <b>@Model.MaskedEmail</b>. Enter it below and choose a password for your account.</p>
+            <form method="post" asp-controller="Trial" asp-action="Verify" asp-route-id="@Model.Ref" novalidate id="verify-form">
+                <div asp-validation-summary="ModelOnly" class="err-list"></div>
+                <div class="field">
+                    <label asp-for="Otp"></label>
+                    <input asp-for="Otp" class="otp-input" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="••••••" />
+                    <span asp-validation-for="Otp" class="err"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="Password"></label>
+                    <div class="pw-wrap">
+                        <input asp-for="Password" autocomplete="new-password" />
+                        <button type="button" class="pw-toggle" data-toggle-password aria-label="Show password">Show</button>
+                    </div>
+                    <p class="hint">At least 8 characters with an uppercase letter, a lowercase letter and a number.</p>
+                    <span asp-validation-for="Password" class="err"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="ConfirmPassword"></label>
+                    <input asp-for="ConfirmPassword" autocomplete="new-password" />
+                    <span asp-validation-for="ConfirmPassword" class="err"></span>
+                </div>
+                <button class="btn btn-block spinner-btn" type="submit">Verify and start my trial</button>
+            </form>
+
+            <form method="post" asp-controller="Trial" asp-action="Resend" asp-route-id="@Model.Ref" class="resend-row">
+                <span class="muted">Didn't get it?</span>
+                <button type="submit" class="linklike" data-resend-seconds="@Model.ResendInSeconds" @(Model.ResendInSeconds > 0 ? "disabled" : null)>
+                    Resend code@(Model.ResendInSeconds > 0 ? $" in {Model.ResendInSeconds}s" : "")
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -1,0 +1,18 @@
+@model TrialWelcomeViewModel
+<div class="page container">
+    <partial name="_TrialSteps" model="4" />
+    <div class="trial-wrap single">
+        <div class="card trial-form center" data-redirect-url="@Model.LoginUrl" data-redirect-seconds="8">
+            <div class="success-ico" aria-hidden="true">✓</div>
+            <h2>You're in, @Model.FullName.Split(' ')[0]!</h2>
+            <p class="muted">Your <b>@Model.Days-day free trial</b> is active until <b>@Fmt.Date(Model.TrialEnd)</b>.</p>
+            <ul class="list-plain" style="text-align:left;margin:18px 0">
+                <li><span>Username</span><b>@Model.Email</b></li>
+                <li><span>Company</span><b>@Model.CompanyName</b></li>
+                <li><span>Password</span><b>the one you just set</b></li>
+            </ul>
+            <a class="btn btn-block" href="@Model.LoginUrl">Open the SyncTally app →</a>
+            <p class="hint" id="redirect-note">Taking you to the app in <span data-countdown>8</span> seconds…</p>
+        </div>
+    </div>
+</div>

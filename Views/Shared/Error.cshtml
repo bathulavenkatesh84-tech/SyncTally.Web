@@ -1,0 +1,19 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+<div class="page container center" style="max-width:640px">
+    <div class="empty" style="border-style:solid">
+        <span class="big" aria-hidden="true">⚠️</span>
+        <h1 style="font-size:1.6rem">@Model.Title</h1>
+        <p>@Model.Message</p>
+        @if (!string.IsNullOrEmpty(Model.RequestId))
+        {
+            <p class="muted"><small>Reference: <code>@Model.RequestId</code></small></p>
+        }
+        <div class="btn-row" style="justify-content:center">
+            <a class="btn" asp-controller="Home" asp-action="Index">Back to home</a>
+            <a class="btn btn-outline" asp-controller="Home" asp-action="Contact">Contact support</a>
+        </div>
+    </div>
+</div>

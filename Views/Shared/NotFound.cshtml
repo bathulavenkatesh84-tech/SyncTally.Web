@@ -1,0 +1,15 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Page not found";
+}
+<div class="page container center" style="max-width:640px">
+    <div class="empty" style="border-style:solid">
+        <span class="big" aria-hidden="true">🔎</span>
+        <h1 style="font-size:1.6rem">@Model.Title</h1>
+        <p>@Model.Message</p>
+        <div class="btn-row" style="justify-content:center">
+            <a class="btn" asp-controller="Home" asp-action="Index">Back to home</a>
+            <a class="btn btn-outline" asp-controller="Features" asp-action="Index">Browse features</a>
+        </div>
+    </div>
+</div>

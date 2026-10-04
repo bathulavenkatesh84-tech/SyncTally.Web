@@ -1,0 +1,257 @@
+<div class="page container">
+    <div class="section-head" style="margin-bottom:20px">
+        <span class="eyebrow">Interactive demo · no sign-up</span>
+        <h1>Try SyncTally in two minutes</h1>
+        <p>Follow one order from the salesman's phone to Tally. Tap through each screen like the real app.</p>
+    </div>
+
+    <p class="demo-note" role="note">
+        <b>Sample data only.</b> Shops, products and rates below are fictional. This demo runs in your browser and shows no real customer data.
+    </p>
+
+    <div class="demo-grid">
+        <ol class="demo-steps" id="demo-steps" aria-label="Demo steps"></ol>
+
+        <div class="demo-stage">
+            <div class="demo-phone" role="region" aria-label="SyncTally demo phone screen">
+                <div class="demo-bar"><span id="demo-bar-title">SyncTally</span><span class="demo-who" id="demo-who">Salesman</span></div>
+                <div class="demo-screen" id="demo-screen" aria-live="polite"></div>
+            </div>
+            <div class="demo-controls">
+                <button type="button" class="btn btn-outline btn-sm" id="demo-prev">← Back</button>
+                <button type="button" class="btn btn-outline btn-sm" id="demo-reset">Restart</button>
+                <button type="button" class="btn btn-sm" id="demo-next">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="cta" style="margin-top:36px">
+        <h2>Like what you see? Try it with your own Tally data.</h2>
+        <p>15-day free trial. Your data stays in your own Google Drive.</p>
+        <div class="btn-row" style="justify-content:center">
+            <a class="btn" asp-controller="Trial" asp-action="Index">Start 15-day free trial</a>
+            <button type="button" class="btn btn-outline" style="color:#fff" data-act="wa-chat">💬 Ask us on WhatsApp</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .demo-note { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; margin: 0 0 22px; color: var(--muted); font-size: .92rem; }
+    .demo-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 32px; align-items: start; }
+    .demo-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+    .demo-steps button { width: 100%; text-align: left; display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 12px; cursor: pointer; font: inherit; }
+    .demo-steps button:hover { border-color: var(--accent); }
+    .demo-steps button[aria-current="step"] { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(20,184,138,.25); background: var(--surface-2); }
+    .demo-steps .n { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; background: var(--surface-2); color: var(--muted); }
+    .demo-steps button[aria-current="step"] .n { background: var(--accent); color: #062b21; }
+    .demo-steps .done .n { background: rgba(22,135,95,.18); color: var(--ok); }
+    .demo-steps b { display: block; }
+    .demo-steps span.d { color: var(--muted); font-size: .92rem; }
+    .demo-stage { position: sticky; top: 90px; }
+    .demo-phone { width: 340px; max-width: 100%; margin: 0 auto; border: 10px solid var(--navy); border-radius: 34px; background: var(--surface); box-shadow: var(--shadow); overflow: hidden; }
+    .demo-bar { display: flex; justify-content: space-between; align-items: center; background: var(--navy); color: #fff; padding: 10px 14px; font-weight: 700; font-size: .95rem; }
+    .demo-who { font-size: .72rem; font-weight: 700; background: rgba(255,255,255,.16); padding: 2px 8px; border-radius: 99px; }
+    .demo-screen { min-height: 470px; max-height: 520px; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; background: var(--bg); }
+    .demo-screen h3 { margin: 0; font-size: 1rem; }
+    .demo-screen .hint { color: var(--muted); font-size: .82rem; margin: 0; }
+    .d-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; }
+    .d-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: .9rem; padding: 3px 0; }
+    .d-row.total { border-top: 1px dashed var(--border); margin-top: 4px; padding-top: 8px; font-weight: 800; }
+    .d-shop { width: 100%; text-align: left; font: inherit; color: var(--text); cursor: pointer; }
+    .d-shop:hover { border-color: var(--accent); }
+    .d-shop small { color: var(--muted); display: block; }
+    .d-qty { display: inline-flex; align-items: center; gap: 6px; }
+    .d-qty button { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 800; cursor: pointer; }
+    .d-qty output { min-width: 22px; text-align: center; font-weight: 700; }
+    .d-ok { color: var(--ok); font-weight: 700; }
+    .d-big { font-size: 2.2rem; text-align: center; }
+    .d-wa { background: #dcf8c6; color: #123; border-radius: 12px 12px 12px 2px; padding: 10px 12px; font-size: .88rem; align-self: flex-start; max-width: 92%; }
+    [data-theme="dark"] .d-wa { background: #1f4d36; color: #e8f5ec; }
+    .demo-controls { display: flex; justify-content: center; gap: 8px; margin-top: 14px; }
+    @@media (max-width: 900px) {
+        .demo-grid { grid-template-columns: 1fr; }
+        .demo-stage { position: static; order: -1; }
+    }
+</style>
+
+@section Scripts {
+<script>
+(function () {
+    'use strict';
+
+    // ---- Fictional sample data (nothing here belongs to any real business) ----
+    var SHOPS = [
+        { name: 'Sunrise Traders', area: 'Sample City', out: 12450, limit: 50000 },
+        { name: 'Green Valley Stores', area: 'Sample City', out: 0, limit: 30000 },
+        { name: 'Metro Mini Mart', area: 'Sample Town', out: 28900, limit: 40000 }
+    ];
+    var ITEMS = [
+        { id: 'p1', icon: '🍪', name: 'Glucose Biscuits 200g', rate: 28, stock: 340 },
+        { id: 'p2', icon: '🥤', name: 'Orange Drink 1L', rate: 55, stock: 120 },
+        { id: 'p3', icon: '🧼', name: 'Bathing Soap 100g', rate: 38, stock: 500 },
+        { id: 'p4', icon: '🍚', name: 'Basmati Rice 5kg', rate: 520, stock: 60 }
+    ];
+    var GST = 0.18;
+    var STEPS = [
+        { t: 'Pick the retailer', d: 'The salesman sees each shop’s outstanding balance and credit limit before taking the order.', who: 'Salesman' },
+        { t: 'Add items to the cart', d: 'Live stock and rates, even on a weak network. Totals and GST update as you tap.', who: 'Salesman' },
+        { t: 'Order reaches the office', d: 'No phone calls or WhatsApp photos of order books. It lands in the office queue instantly.', who: 'Salesman' },
+        { t: 'Office approves', d: 'Stock is checked at approval time. Nothing posts until you approve.', who: 'Office' },
+        { t: 'Invoice on WhatsApp', d: 'Send the invoice to the retailer in one tap. Payment reminders can follow automatically.', who: 'Office' },
+        { t: 'Posted to Tally', d: 'The voucher is created in Tally through the connector on your PC. No double entry.', who: 'Tally' }
+    ];
+
+    var state = { step: 0, shop: 0, qty: { p1: 12, p2: 6, p3: 0, p4: 0 }, sent: false, rejected: false };
+    var screen = document.getElementById('demo-screen');
+    var stepsEl = document.getElementById('demo-steps');
+    var who = document.getElementById('demo-who');
+    var barTitle = document.getElementById('demo-bar-title');
+
+    function fmt(n) { return '₹' + Math.round(n).toLocaleString('en-IN'); }
+    function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+    function row(left, right, cls) { var r = el('div', 'd-row' + (cls ? ' ' + cls : '')); r.appendChild(el('span', null, left)); r.appendChild(el('span', null, right)); return r; }
+    function btn(text, onClick, cls) { var b = el('button', 'btn btn-block ' + (cls || ''), text); b.type = 'button'; b.addEventListener('click', onClick); return b; }
+
+    function lines() { return ITEMS.filter(function (i) { return state.qty[i.id] > 0; }); }
+    function subtotal() { return lines().reduce(function (s, i) { return s + i.rate * state.qty[i.id]; }, 0); }
+    function go(n) { state.step = Math.max(0, Math.min(STEPS.length - 1, n)); render(); }
+
+    // ---- Screens ----
+    var screens = [
+        function () {
+            screen.appendChild(el('h3', null, 'Select retailer'));
+            screen.appendChild(el('p', 'hint', 'Tap a shop to start an order.'));
+            SHOPS.forEach(function (s, i) {
+                var b = el('button', 'd-card d-shop'); b.type = 'button';
+                b.appendChild(el('b', null, s.name));
+                b.appendChild(el('small', null, s.area));
+                b.appendChild(row('Outstanding', fmt(s.out)));
+                b.appendChild(row('Credit limit', fmt(s.limit)));
+                b.addEventListener('click', function () { state.shop = i; go(1); });
+                screen.appendChild(b);
+            });
+        },
+        function () {
+            var s = SHOPS[state.shop];
+            screen.appendChild(el('h3', null, 'New order · ' + s.name));
+            screen.appendChild(el('p', 'hint', 'Use + and − to change quantity.'));
+            ITEMS.forEach(function (i) {
+                var c = el('div', 'd-card');
+                c.appendChild(row(i.icon + ' ' + i.name, fmt(i.rate)));
+                var r = el('div', 'd-row');
+                r.appendChild(el('span', 'hint', 'Stock: ' + i.stock));
+                var q = el('span', 'd-qty');
+                var minus = el('button', null, '−'); minus.type = 'button'; minus.setAttribute('aria-label', 'Decrease ' + i.name);
+                var out = el('output', null, String(state.qty[i.id]));
+                var plus = el('button', null, '+'); plus.type = 'button'; plus.setAttribute('aria-label', 'Increase ' + i.name);
+                minus.addEventListener('click', function () { state.qty[i.id] = Math.max(0, state.qty[i.id] - 1); render(); });
+                plus.addEventListener('click', function () { state.qty[i.id] = Math.min(i.stock, state.qty[i.id] + 1); render(); });
+                q.appendChild(minus); q.appendChild(out); q.appendChild(plus);
+                r.appendChild(q); c.appendChild(r); screen.appendChild(c);
+            });
+            var st = subtotal(), t = el('div', 'd-card');
+            t.appendChild(row('Subtotal', fmt(st)));
+            t.appendChild(row('GST (18%)', fmt(st * GST)));
+            t.appendChild(row('Total', fmt(st * (1 + GST)), 'total'));
+            screen.appendChild(t);
+            var b = btn('Place order →', function () { go(2); });
+            if (st === 0) { b.disabled = true; b.textContent = 'Add at least one item'; }
+            screen.appendChild(b);
+        },
+        function () {
+            screen.appendChild(el('div', 'd-big', '✅'));
+            screen.appendChild(el('h3', null, 'Order placed')).style.textAlign = 'center';
+            var c = el('div', 'd-card');
+            c.appendChild(row('Order no.', 'SO-DEMO-1001'));
+            c.appendChild(row('Retailer', SHOPS[state.shop].name));
+            c.appendChild(row('Total', fmt(subtotal() * (1 + GST))));
+            c.appendChild(row('Status', 'Awaiting approval'));
+            screen.appendChild(c);
+            screen.appendChild(el('p', 'hint', 'The office can see this order right now.'));
+            screen.appendChild(btn('Switch to office view →', function () { go(3); }));
+        },
+        function () {
+            screen.appendChild(el('h3', null, 'Orders awaiting approval'));
+            var c = el('div', 'd-card');
+            c.appendChild(row('SO-DEMO-1001 · ' + SHOPS[state.shop].name, fmt(subtotal() * (1 + GST))));
+            lines().forEach(function (i) {
+                var r = row(i.icon + ' ' + i.name + ' × ' + state.qty[i.id], 'Stock OK');
+                r.lastChild.className = 'd-ok'; c.appendChild(r);
+            });
+            screen.appendChild(c);
+            var s = SHOPS[state.shop];
+            screen.appendChild(el('p', 'hint', 'Outstanding ' + fmt(s.out) + ' of ' + fmt(s.limit) + ' credit limit.'));
+            if (state.rejected) {
+                screen.appendChild(el('div', 'd-card', 'Rejected. In the real app the salesman is notified and can edit the order. Try Approve instead.'));
+                state.rejected = false;
+            }
+            screen.appendChild(btn('Approve order ✓', function () { go(4); }));
+            screen.appendChild(btn('Reject', function () { state.rejected = true; render(); }, 'btn-outline'));
+        },
+        function () {
+            screen.appendChild(el('h3', null, 'Invoice INV-DEMO-1001'));
+            var c = el('div', 'd-card');
+            lines().forEach(function (i) { c.appendChild(row(i.name + ' × ' + state.qty[i.id], fmt(i.rate * state.qty[i.id]))); });
+            c.appendChild(row('GST (18%)', fmt(subtotal() * GST)));
+            c.appendChild(row('Total', fmt(subtotal() * (1 + GST)), 'total'));
+            screen.appendChild(c);
+            if (!state.sent) {
+                screen.appendChild(btn('💬 Send on WhatsApp', function () { state.sent = true; render(); }));
+            } else {
+                screen.appendChild(el('div', 'd-wa', 'Hi ' + SHOPS[state.shop].name + ', your invoice INV-DEMO-1001 for ' + fmt(subtotal() * (1 + GST)) + ' is ready. (sample message)'));
+                screen.appendChild(el('p', 'hint', 'A payment reminder can be sent automatically on the due date.'));
+                screen.appendChild(btn('Post to Tally →', function () { go(5); }));
+            }
+        },
+        function () {
+            screen.appendChild(el('div', 'd-big', '🔌'));
+            screen.appendChild(el('h3', null, 'Posted to Tally')).style.textAlign = 'center';
+            var c = el('div', 'd-card');
+            c.appendChild(row('Voucher', 'Sales · DEMO-1001'));
+            c.appendChild(row('Party ledger', SHOPS[state.shop].name));
+            c.appendChild(row('Amount', fmt(subtotal() * (1 + GST))));
+            c.appendChild(row('Stock', 'Reduced automatically'));
+            c.appendChild(row('Status', '✓ Synced'));
+            screen.appendChild(c);
+            screen.appendChild(el('p', 'hint', 'That is the whole journey, with no re-typing. Ready to try it on your own Tally?'));
+            var a = el('a', 'btn btn-block', 'Start free trial →'); a.href = '@Url.Action("Index", "Trial")';
+            screen.appendChild(a);
+        }
+    ];
+
+    function renderSteps() {
+        stepsEl.textContent = '';
+        STEPS.forEach(function (s, i) {
+            var li = document.createElement('li');
+            var b = el('button', i < state.step ? 'done' : ''); b.type = 'button';
+            if (i === state.step) b.setAttribute('aria-current', 'step');
+            b.appendChild(el('span', 'n', i < state.step ? '✓' : String(i + 1)));
+            var box = document.createElement('div');
+            box.appendChild(el('b', null, s.t)); box.appendChild(el('span', 'd', s.d));
+            b.appendChild(box);
+            b.addEventListener('click', function () { go(i); });
+            li.appendChild(b); stepsEl.appendChild(li);
+        });
+    }
+
+    function render() {
+        screen.textContent = '';
+        screens[state.step]();
+        who.textContent = STEPS[state.step].who;
+        barTitle.textContent = state.step >= 3 && state.step < 5 ? 'SyncTally Office' : (state.step === 5 ? 'Tally Prime' : 'SyncTally');
+        document.getElementById('demo-prev').disabled = state.step === 0;
+        document.getElementById('demo-next').disabled = state.step === STEPS.length - 1;
+        renderSteps();
+        screen.scrollTop = 0;
+    }
+
+    document.getElementById('demo-prev').addEventListener('click', function () { go(state.step - 1); });
+    document.getElementById('demo-next').addEventListener('click', function () { go(state.step + 1); });
+    document.getElementById('demo-reset').addEventListener('click', function () {
+        state = { step: 0, shop: 0, qty: { p1: 12, p2: 6, p3: 0, p4: 0 }, sent: false, rejected: false };
+        render();
+    });
+    render();
+})();
+</script>
+}

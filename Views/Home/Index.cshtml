@@ -1,0 +1,130 @@
+@model HomeViewModel
+@inject SyncTally.Web.Services.Interfaces.IAuthService Auth
+
+<section class="hero">
+    <div class="container hero-grid">
+        <div>
+            <span class="eyebrow">Built for Indian distributors using Tally</span>
+            <h1>Take orders on mobile. <span style="color:#5eeac4">Sync straight to Tally.</span></h1>
+            <p class="lead">SyncTally takes you from order to invoice, delivery, reminders and collection – and posts everything back into Tally, so your books stay right without double entry.</p>
+            <div class="btn-row">
+                <a class="btn" asp-controller="Trial" asp-action="Index">Start 15-day free trial</a>
+                <a class="btn btn-outline" asp-controller="Demo" asp-action="Index">Try the live demo</a>
+                <button type="button" class="btn btn-outline" data-act="wa-chat">💬 Chat on WhatsApp</button>
+            </div>
+            <div class="hero-stats">
+                <div><b>Your Drive</b><span>data stored in your own Google Drive</span></div>
+                <div><b>Tally sync</b><span>orders post straight into Tally</span></div>
+                <div><b>15 days</b><span>free trial, no card needed</span></div>
+            </div>
+        </div>
+        <div class="phone" aria-hidden="true">
+            <div class="phone-screen">
+                <h3>New order · City Mart</h3>
+                <div class="phone-row"><span>🍪 Marie Biscuits</span><b>12 × ₹28</b></div>
+                <div class="phone-row"><span>🥤 Orange Drink 1L</span><b>6 × ₹55</b></div>
+                <div class="phone-row"><span>🧼 Bathing Soap</span><b>10 × ₹98</b></div>
+                <div class="phone-row"><span>GST (18%)</span><b>₹293</b></div>
+                <div class="phone-row"><span><b>Total</b></span><b>₹1,939</b></div>
+                <div class="phone-btn">Place order → Tally</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <h2>One order. Seven smooth stops.</h2>
+            <p>Follow a single order through your distribution business.</p>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Order journey">
+            @for (int i = 0; i < Model.Journey.Count; i++)
+            {
+                var s = Model.Journey[i];
+                <button type="button" class="tab" role="tab" id="tab-@i" aria-selected="@(i == 0 ? "true" : "false")" aria-controls="tabpanel"
+                        data-i="@i" data-icon="@s.Icon" data-title="@s.Title" data-desc="@s.Description" tabindex="@(i == 0 ? 0 : -1)">@(i + 1). @s.Title</button>
+            }
+        </div>
+        <div class="tab-panel card" id="tabpanel" role="tabpanel" aria-labelledby="tab-0">
+            @if (Model.Journey.Count > 0)
+            {
+                <div class="tab-icon" aria-hidden="true">@Model.Journey[0].Icon</div>
+                <div><h3>1. @Model.Journey[0].Title</h3><p style="margin:0">@Model.Journey[0].Description</p></div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section" id="your-data">
+    <div class="container">
+        <div class="section-head">
+            <h2>Your data stays in your Google Drive</h2>
+            <p>SyncTally keeps your business data in a spreadsheet inside your own Google account – not on our servers.</p>
+        </div>
+        <div class="grid grid-3">
+            <div class="card feature"><div class="ico" aria-hidden="true">🗂️</div><h3>You own it</h3><p>Orders and records are saved in a Google Sheet in your Drive. Open it, back it up or export it any time.</p></div>
+            <div class="card feature"><div class="ico" aria-hidden="true">🔐</div><h3>You control access</h3><p>Share or revoke access from your own Google account. Remove SyncTally's access and syncing stops.</p></div>
+            <div class="card feature"><div class="ico" aria-hidden="true">🔌</div><h3>Tally stays on your PC</h3><p>The Tally Connector runs next to Tally. Your books are never uploaded wholesale or moved off your machine.</p></div>
+        </div>
+        <p class="center" style="margin-top:24px"><a class="btn btn-outline" asp-controller="Home" asp-action="About" asp-fragment="data-safety">How we keep data safe →</a></p>
+    </div>
+</section>
+
+<section class="section alt">
+    <div class="container">
+        <div class="section-head">
+            <h2>Everything a distributor needs</h2>
+            <p>Replace WhatsApp orders, paper chits and spreadsheets with one connected workflow.</p>
+        </div>
+        <div class="grid grid-3">
+            @foreach (var f in Model.Highlights)
+            {
+                <a class="card feature feature-link" asp-controller="Features" asp-action="Details" asp-route-id="@f.Slug">
+                    <div class="ico" aria-hidden="true">@f.Icon</div>
+                    <h3>@f.Title</h3>
+                    <p>@f.Lead</p>
+                </a>
+            }
+        </div>
+        <p class="center" style="margin-top:28px"><a class="btn btn-outline" asp-controller="Features" asp-action="Index">See all features →</a></p>
+    </div>
+</section>
+
+@if (!string.IsNullOrWhiteSpace(Model.TestimonialQuote))
+{
+    <section class="section">
+        <div class="container">
+            <figure class="quote card" style="margin:0 auto">
+                <blockquote style="margin:0">“@Model.TestimonialQuote”</blockquote>
+                <footer>— @Model.TestimonialAuthor</footer>
+            </figure>
+        </div>
+    </section>
+}
+
+<section class="section alt">
+    <div class="container" style="max-width:800px">
+        <div class="section-head"><h2>Frequently asked questions</h2></div>
+        @foreach (var q in Model.Faqs)
+        {
+            <details class="faq">
+                <summary>@q.Question</summary>
+                <p>@q.Answer</p>
+            </details>
+        }
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="cta">
+            <h2>Ready to stop re-typing orders?</h2>
+            <p>Set up in under an hour. Our team helps you connect Tally.</p>
+            <div class="btn-row" style="justify-content:center">
+                <a class="btn" asp-controller="Trial" asp-action="Index">Start 15-day free trial</a>
+                <a class="btn btn-outline" style="color:#fff" asp-controller="Home" asp-action="Contact">Talk to us</a>
+            </div>
+        </div>
+    </div>
+</section>

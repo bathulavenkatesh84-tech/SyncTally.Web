@@ -1,0 +1,88 @@
+@model TrialStartViewModel
+<div class="page container">
+    <partial name="_TrialSteps" model="1" />
+    <div class="trial-wrap">
+        <aside class="trial-side">
+            <span class="eyebrow">15-day free trial</span>
+            <h1>Take orders on mobile. Sync to Tally. Free for 15 days.</h1>
+            <p class="lead">Tell us a little about your business. We'll email you a code to confirm your address, then you set a password and start.</p>
+            <ul class="check-list light">
+                <li>All features switched on – no card required</li>
+                <li>Connect your Tally with our guided setup</li>
+                <li>Orders, invoices, WhatsApp reminders and receipts</li>
+                <li>Cancel any time – your Tally data never leaves your PC</li>
+            </ul>
+            <figure class="mini-quote">
+                <blockquote>“Orders land in Tally before the salesman reaches the next shop.”</blockquote>
+                <figcaption>— FMCG distributor, Pune</figcaption>
+            </figure>
+        </aside>
+
+        <form class="card trial-form" method="post" asp-controller="Trial" asp-action="Index" novalidate id="trial-form">
+            <h2>Create your trial account</h2>
+            <p class="muted" style="margin-top:0">Your email becomes your username.</p>
+            <div asp-validation-summary="ModelOnly" class="err-list"></div>
+            @if (ViewData["EmailExists"] is true)
+            {
+                <div class="email-taken" role="alert" style="display:flex;gap:12px;padding:14px 16px;margin:0 0 16px;border:1px solid #f1c27d;background:#fff8ec;border-radius:10px">
+                    <span aria-hidden="true" style="font-size:22px;line-height:1">⚠️</span>
+                    <div>
+                        <b style="color:#7a4a00">This email is already in use</b>
+                        <p style="margin:4px 0 8px;color:#5b4a2e">
+                            <b>@Model.Email</b> is already registered with SyncTally, so it can't start a new trial.
+                            Please use a different email address below, or sign in with this one.
+                        </p>
+                        <a class="btn btn-sm" href="@ViewData["LoginUrl"]">Sign in instead</a>
+                    </div>
+                </div>
+            }
+            <input type="hidden" asp-for="Plan" />
+            @if (!string.IsNullOrWhiteSpace(Model.Plan))
+            {
+                <p><span class="badge ok">Interested in the @Model.Plan plan</span></p>
+            }
+            <div class="form-grid">
+                <div class="field">
+                    <label asp-for="FullName"></label>
+                    <input asp-for="FullName" autocomplete="name" />
+                    <span asp-validation-for="FullName" class="err"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="CompanyName"></label>
+                    <input asp-for="CompanyName" autocomplete="organization" />
+                    <span asp-validation-for="CompanyName" class="err"></span>
+                </div>
+                @* <div class="field full">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" type="email" autocomplete="email" @(ViewData["EmailExists"] is true ? "autofocus aria-invalid=true" : "") />
+                    <span asp-validation-for="Email" class="err"></span>
+                </div> *@
+                <div class="field full">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" type="email" autocomplete="email"
+                           autofocus="@(ViewData["EmailExists"] is true ? "autofocus" : null)"
+                           aria-invalid="@(ViewData["EmailExists"] is true ? "true" : null)" />
+                    <span asp-validation-for="Email" class="err"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="Phone"></label>
+                    <input asp-for="Phone" type="tel" maxlength="10" inputmode="numeric" autocomplete="tel-national" />
+                    <span asp-validation-for="Phone" class="err"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="City"></label>
+                    <input asp-for="City" autocomplete="address-level2" />
+                    <span asp-validation-for="City" class="err"></span>
+                </div>
+                <div class="field full">
+                    <label asp-for="SalesmenCount"></label>
+                    <input asp-for="SalesmenCount" type="number" min="1" max="500" />
+                    <span asp-validation-for="SalesmenCount" class="err"></span>
+                </div>
+            </div>
+            <button class="btn btn-block spinner-btn" type="submit">Send my verification code</button>
+            <p class="hint" style="text-align:center">Already have an account? <a href="@ViewData["LoginUrl"]">Sign in</a></p>
+        </form>
+    </div>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

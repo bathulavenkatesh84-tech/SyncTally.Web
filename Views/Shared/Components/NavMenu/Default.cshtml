@@ -1,0 +1,27 @@
+@model NavMenuViewModel
+@{
+    bool active = Model.ActiveController == "Features";
+}
+<li class="has-menu">
+    <button type="button" class="nav-btn @(active ? "active" : "")" data-toggle="mega" aria-haspopup="true" aria-expanded="false" aria-controls="mega-panel">
+        Features <span class="chev" aria-hidden="true">⌄</span>
+    </button>
+    <div class="mega" id="mega-panel" role="region" aria-label="Features" hidden>
+        @foreach (var col in Model.Columns)
+        {
+            <div class="mega-col">
+                @foreach (var g in col)
+                {
+                    <h2>@g.Title</h2>
+                    <ul>
+                        @foreach (var it in g.Items)
+                        {
+                            <li><a asp-controller="Features" asp-action="Details" asp-route-id="@it.Slug">@it.Title</a></li>
+                        }
+                    </ul>
+                }
+            </div>
+        }
+        <div class="mega-foot"><a asp-controller="Features" asp-action="Index">All features <span aria-hidden="true">→</span></a></div>
+    </div>
+</li>
