@@ -19,6 +19,8 @@
     <link rel="icon" type="image/x-icon" href="~/images/SyncTallyIcon.ico" asp-append-version="true" />
 @*     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f1f3d'/%3E%3Cpath d='M18 22h28M18 32h28M18 42h16' stroke='%2322d3a5' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
  *@    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/meeting-booking.css" />
+    <link rel="stylesheet" href="~/css/comparison-table.css" />
         <style>
             .brand-lockup,
             .login-logo {
@@ -243,5 +245,7 @@
     <script src="~/lib/jquery/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    @await Html.PartialAsync("_MeetingBookingModal")
+    <script src="~/js/meeting-booking.js"></script>
 </body>
 </html>

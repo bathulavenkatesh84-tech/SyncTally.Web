@@ -1,0 +1,452 @@
+/* ============================================================
+   meeting-booking.css
+   Place in: wwwroot/css/meeting-booking.css
+   Link in _Layout.cshtml or the page that needs it:
+       <link rel="stylesheet" href="~/css/meeting-booking.css" />
+   ============================================================ */
+
+/* ── Overlay ── */
+.mb-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    animation: mbFadeIn 0.2s ease;
+}
+
+@keyframes mbFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ── Modal card ── */
+.mb-modal {
+    background: #fff;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 860px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 40px 36px 32px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+    animation: mbSlideUp 0.22s ease;
+}
+
+@keyframes mbSlideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+.mb-close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 26px;
+    line-height: 1;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background 0.15s;
+}
+.mb-close:hover { background: #f3f4f6; color: #111; }
+
+/* ── Steps ── */
+.mb-step { animation: mbFadeIn 0.18s ease; }
+
+/* ── Icon ── */
+.mb-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: #eff3ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+.mb-icon-success { background: #f0fdf4; }
+
+/* ── Typography ── */
+.mb-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+    text-align: center;
+    margin: 0 0 8px;
+}
+.mb-subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    text-align: center;
+    margin: 0 0 28px;
+}
+
+/* ── Form elements ── */
+.mb-form-group { margin-bottom: 16px; }
+
+.mb-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+.mb-phone-row {
+    display: flex;
+    align-items: stretch;
+    border: 1.5px solid #d1d5db;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+}
+.mb-phone-row:focus-within { border-color: #3B6CF8; }
+
+.mb-country-code {
+    background: #f9fafb;
+    border-right: 1.5px solid #d1d5db;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: #374151;
+    font-size: 15px;
+    flex-shrink: 0;
+}
+
+.mb-input {
+    width: 100%;
+    border: none;
+    padding: 12px 14px;
+    font-size: 15px;
+    color: #111827;
+    outline: none;
+    background: #fff;
+}
+.mb-input::placeholder { color: #9ca3af; }
+
+/* standalone input (not in phone row) */
+.mb-form-group > .mb-input {
+    border: 1.5px solid #d1d5db;
+    border-radius: 10px;
+    transition: border-color 0.15s;
+}
+.mb-form-group > .mb-input:focus { border-color: #3B6CF8; }
+
+.mb-error {
+    display: block;
+    font-size: 12px;
+    color: #ef4444;
+    margin-top: 5px;
+}
+
+.mb-privacy {
+    font-size: 12px;
+    color: #9ca3af;
+    text-align: center;
+    margin: 0 0 24px;
+}
+.mb-privacy a { color: #3B6CF8; text-decoration: none; }
+.mb-privacy a:hover { text-decoration: underline; }
+
+/* ── Buttons ── */
+.mb-btn-primary {
+    display: block;
+    width: 100%;
+    background: #1e3a8a;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    margin-bottom: 10px;
+}
+.mb-btn-primary:hover  { background: #1e40af; }
+.mb-btn-primary:active { transform: scale(0.98); }
+
+.mb-btn-ghost {
+    display: block;
+    width: 100%;
+    background: none;
+    border: none;
+    color: #6b7280;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background 0.15s;
+}
+.mb-btn-ghost:hover { background: #f3f4f6; color: #111; }
+
+/* ── Calendar Layout ── */
+.mb-cal-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 32px;
+}
+
+@media (max-width: 640px) {
+    .mb-cal-layout { grid-template-columns: 1fr; gap: 20px; }
+    .mb-modal { padding: 28px 20px 24px; }
+}
+
+/* ── Left info panel ── */
+.mb-organizer-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.mb-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #1e3a8a;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.mb-organizer-name { font-weight: 700; font-size: 15px; color: #111827; }
+.mb-organizer-role { font-size: 12px; color: #9ca3af; }
+
+.mb-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 8px;
+}
+.mb-meta-sub { font-size: 12px; color: #9ca3af; margin-left: 24px; }
+
+/* ── Calendar right panel ── */
+.mb-cal-heading {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 16px;
+}
+
+.mb-month-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.mb-month-label { font-weight: 600; font-size: 15px; color: #111827; }
+
+.mb-nav-btn {
+    background: none;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+    cursor: pointer;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.12s;
+}
+.mb-nav-btn:hover { background: #f3f4f6; }
+
+.mb-day-headers {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #9ca3af;
+    margin-bottom: 6px;
+}
+
+.mb-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.mb-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+    border: none;
+    background: none;
+}
+
+.mb-day:empty  { cursor: default; }
+
+.mb-day.available { color: #111827; }
+.mb-day.available:hover { background: #ffe4e4; }
+
+.mb-day.selected {
+    background: #e11d48 !important;
+    color: #fff !important;
+    font-weight: 700;
+}
+
+.mb-day.today { font-weight: 700; }
+.mb-day.today::after {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #e11d48;
+    position: absolute;
+    bottom: 2px;
+}
+.mb-day.today { position: relative; }
+
+.mb-day.past,
+.mb-day.unavailable {
+    color: #d1d5db;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.mb-day.weekend { color: #6b7280; }
+
+/* ── Timezone ── */
+.mb-tz-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 12px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* ── Time slots panel ── */
+.mb-time-panel {
+    margin-top: 24px;
+    border-top: 1px solid #f3f4f6;
+    padding-top: 20px;
+}
+
+.mb-time-header {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 12px;
+}
+
+.mb-time-slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.mb-slot {
+    background: #fff;
+    border: 1.5px solid #3B6CF8;
+    border-radius: 8px;
+    padding: 10px 8px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: #3B6CF8;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+}
+.mb-slot:hover  { background: #eff3ff; }
+.mb-slot.selected { background: #3B6CF8; color: #fff; }
+
+/* ── Summary / Confirm ── */
+.mb-summary {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 20px 0;
+}
+
+.mb-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 14px;
+}
+.mb-summary-row:last-child { border-bottom: none; }
+
+.mb-summary-label { color: #6b7280; }
+.mb-summary-value { color: #111827; font-weight: 500; }
+
+.mb-confirmed-details {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 16px 0 24px;
+}
+
+/* ── Meet link box ── */
+.mb-meet-link-box {
+    background: #eff3ff;
+    border: 1px solid #c7d2fe;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 16px 0;
+    text-align: center;
+}
+.mb-meet-label { display: block; font-size: 12px; color: #6b7280; margin-bottom: 6px; }
+.mb-meet-url {
+    font-size: 14px;
+    font-weight: 600;
+    color: #3B6CF8;
+    word-break: break-all;
+    text-decoration: none;
+}
+.mb-meet-url:hover { text-decoration: underline; }
+
+/* ── Trigger button (use on your pages) ── */
+.mb-trigger-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #1e3a8a;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    text-decoration: none;
+}
+.mb-trigger-btn:hover  { background: #1e40af; color: #fff; }
+.mb-trigger-btn:active { transform: scale(0.98); }

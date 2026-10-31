@@ -1,0 +1,43 @@
+@model SyncTally.Web.ViewComponents.ComparisonTableParams
+
+<section class="ct-section">
+    <div class="container ct-wrapper">
+        @if (!string.IsNullOrWhiteSpace(Model.Title))
+        {
+            <h2 class="ct-heading">@Model.Title</h2>
+        }
+        <div style="overflow-x:auto;">
+            <table class="ct-table" role="table">
+                <thead>
+                    <tr>
+                        <th class="ct-th-feature">What you need</th>
+                        <th class="ct-th-yours">@Model.YourProduct</th>
+                        <th class="ct-th-theirs">@Model.Competitor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.Rows)
+                    {
+                        <tr>
+                            <td class="ct-td-feature">@row.Feature</td>
+                            <td class="ct-td-yours">
+                                <span class="ct-check" aria-hidden="true">
+                                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                                        <circle cx="10" cy="10" r="10" fill="#1e3a8a"/>
+                                        <polyline points="5,10 9,14 15,7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </span>
+                                @row.Yours
+                            </td>
+                            <td class="ct-td-theirs">@row.Theirs</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.FootnoteDate))
+        {
+            <p class="ct-footnote">Comparison based on typical user experience as of @Model.FootnoteDate.</p>
+        }
+    </div>
+</section>

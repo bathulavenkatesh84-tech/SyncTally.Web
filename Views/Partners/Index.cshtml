@@ -56,7 +56,9 @@
         </div>
         <partial name="_Pager" model="pager" />
     }
-
+<button class="mb-trigger-btn" onclick="MeetingBooking.open()">
+    Book a meeting with the founder →
+</button>
     <form class="card auth-wrap" id="apply" method="post" asp-controller="Partners" asp-action="Apply" novalidate style="max-width:560px;margin-top:40px">
         <h2>Become a partner</h2>
         <div asp-validation-summary="ModelOnly" class="err-list"></div>

@@ -8,6 +8,110 @@
         "sim" => ("warn", "Simulated in demo"),
         _ => ("", "Full product")
     };
+
+    // ── Comparison table: pick rows based on feature slug ──────────────
+    var slug = (f.Slug ?? "").ToLower();
+
+    string compTitle;
+    List<ComparisonRow> compRows;
+
+    if (slug.Contains("invoice") || slug.Contains("irn") || slug.Contains("einvoice"))
+    {
+        compTitle = "What happens after the invoice is raised";
+        compRows = new List<ComparisonRow>
+        {
+            new() { Feature = "Generating IRN from a phone",     Yours = "Yes, without a portal login",              Theirs = "Portal login on desktop only" },
+            new() { Feature = "Converting delivery challan to e-invoice", Yours = "Auto-converted inside the app",  Theirs = "Re-enter details manually" },
+            new() { Feature = "Cancelling within 24 hours",      Yours = "One tap, tracks the window",              Theirs = "Manual portal login before the cutoff" },
+            new() { Feature = "Sharing invoice via WhatsApp",    Yours = "Sent automatically on generation",        Theirs = "Download PDF → share manually" },
+            new() { Feature = "Sync back to Tally",              Yours = "Instant, no desktop needed",              Theirs = "Re-enter on Tally desktop" },
+        };
+    }
+    else if (slug.Contains("payment") || slug.Contains("collection") || slug.Contains("upi"))
+    {
+        compTitle = "What happens when you collect payment";
+        compRows = new List<ComparisonRow>
+        {
+            new() { Feature = "Sending a payment link",           Yours = "UPI link from the app in one tap",        Theirs = "Share bank details manually" },
+            new() { Feature = "Reconciliation in Tally",          Yours = "Auto-reconciled on payment receipt",      Theirs = "Manual entry in Tally" },
+            new() { Feature = "Collection on delivery",           Yours = "UPI link sent on the spot",               Theirs = "Cash or cheque, manual reconciliation" },
+            new() { Feature = "Outstanding view for the team",    Yours = "Live on the salesman's phone",            Theirs = "Ask the accounts team" },
+            new() { Feature = "Payment receipt to customer",      Yours = "Sent automatically via WhatsApp",        Theirs = "Print and hand over" },
+        };
+    }
+    else if (slug.Contains("reminder") || slug.Contains("overdue") || slug.Contains("receivable"))
+    {
+        compTitle = "What happens with overdue payments";
+        compRows = new List<ComparisonRow>
+        {
+            new() { Feature = "Sending payment reminders",        Yours = "Automated WhatsApp reminders",            Theirs = "Owner or staff calls manually" },
+            new() { Feature = "Showing customer ledger",          Yours = "Shared via WhatsApp link instantly",      Theirs = "Print and courier or visit in person" },
+            new() { Feature = "Tracking follow-ups",              Yours = "In-app log with timestamps",              Theirs = "Spreadsheet or memory" },
+            new() { Feature = "Customer acknowledges the dues",   Yours = "Link shows live balance",                 Theirs = "Customer disputes figure later" },
+            new() { Feature = "Reconciliation after payment",     Yours = "Auto-matched in Tally",                  Theirs = "Manual match in Tally" },
+        };
+    }
+    else if (slug.Contains("mobile") || slug.Contains("phone") || slug.Contains("tally-on"))
+    {
+        compTitle = "What your team can do on the phone";
+        compRows = new List<ComparisonRow>
+        {
+            new() { Feature = "Check outstanding receivables",    Yours = "Live, from the phone",                    Theirs = "Login to Tally desktop" },
+            new() { Feature = "Create a sales order",             Yours = "On the phone, syncs to Tally instantly",  Theirs = "Only on desktop Tally" },
+            new() { Feature = "Share invoice via WhatsApp",       Yours = "One tap from the app",                    Theirs = "Export PDF → share manually" },
+            new() { Feature = "View stock on hand",               Yours = "Real-time, pulled from Tally",            Theirs = "Need desktop access" },
+            new() { Feature = "Salesman order app",               Yours = "Dedicated app with shareable order link", Theirs = "Not available" },
+        };
+    }
+    else if (slug.Contains("gst") || slug.Contains("eway") || slug.Contains("e-way"))
+    {
+        compTitle = "What happens during GST and e-way bill filing";
+        compRows = new List<ComparisonRow>
+        {
+            new() { Feature = "E-way bill from phone",            Yours = "Generate and share from the app",         Theirs = "Portal login on desktop" },
+            new() { Feature = "GST report access",                Yours = "On mobile, drill-down ready",             Theirs = "Tally desktop only" },
+            new() { Feature = "Import purchase invoice from PDF", Yours = "Scan PDF → auto-entries in Tally",       Theirs = "Manual data entry" },
+            new() { Feature = "GSTR reconciliation",              Yours = "Matched automatically",                   Theirs = "Manual spreadsheet matching" },
+            new() { Feature = "E-invoice cancellation window",    Yours = "Within the app, tracks the 24-hour window", Theirs = "Track manually on the portal" },
+        };
+    }
+    else if (slug.Contains("salesman") || slug.Contains("order") || slug.Contains("field"))
+    {
+        compTitle = "What happens when a salesman is in the field";
+        compRows = new List<ComparisonRow>
+        {
+            new() { Feature = "Placing an order in the field",    Yours = "Customer order link – customer fills it", Theirs = "Salesman writes it down or calls the office" },
+            new() { Feature = "Order entry into Tally",           Yours = "Auto-pushed when order is confirmed",     Theirs = "Manual data entry back at the office" },
+            new() { Feature = "Checking stock before promising",  Yours = "Live stock from Tally on the phone",     Theirs = "Call the warehouse or guess" },
+            new() { Feature = "Sharing product catalogue",        Yours = "WhatsApp link with prices from Tally",   Theirs = "PDF shared manually, often outdated" },
+            new() { Feature = "Collection on delivery",           Yours = "UPI link sent instantly, auto-reconciled", Theirs = "Cash or cheque, manual reconciliation" },
+        };
+    }
+    else if (slug.Contains("pdf") || slug.Contains("import") || slug.Contains("scan"))
+    {
+        compTitle = "What happens when a purchase invoice arrives as a PDF";
+        compRows = new List<ComparisonRow>
+        {
+            new() { Feature = "Reading the PDF",                  Yours = "App reads it automatically – no typing",  Theirs = "Someone reads it and types the data" },
+            new() { Feature = "Creating the Tally voucher",       Yours = "Done in seconds from the phone",          Theirs = "Manual entry on desktop Tally" },
+            new() { Feature = "GST fields extracted",             Yours = "GSTIN, HSN, tax amount – all from PDF",  Theirs = "Fill each field by hand" },
+            new() { Feature = "Duplicate detection",              Yours = "Flags if the same invoice was uploaded",  Theirs = "No check – duplicate entries happen" },
+            new() { Feature = "Works from WhatsApp",              Yours = "Forward the PDF to the app in WhatsApp", Theirs = "Download and open desktop Tally" },
+        };
+    }
+    else
+    {
+        // Generic fallback for any other feature
+        compTitle = $"SyncTally vs other Tally users – {f.Title}";
+        compRows = new List<ComparisonRow>
+        {
+            new() { Feature = "Works from a phone",               Yours = "Yes, fully mobile",                        Theirs = "Desktop Tally only" },
+            new() { Feature = "Real-time sync to Tally",          Yours = "Automatic, no manual entry",               Theirs = "Manual re-entry required" },
+            new() { Feature = "Share via WhatsApp",               Yours = "Built in, one tap",                        Theirs = "Export and share manually" },
+            new() { Feature = "Available to the full team",       Yours = "Role-based access, any device",            Theirs = "Whoever is at the Tally computer" },
+            new() { Feature = "Customer self-service",            Yours = "Order/payment links via WhatsApp",         Theirs = "Customer calls the office" },
+        };
+    }
 }
 <section class="hero compact feature-hero">
     <div class="container hero-grid">
@@ -123,6 +227,16 @@
     </div>
 </section>
 
+@* ── Comparison table: SyncTally vs Other Tally users ── *@
+@await Component.InvokeAsync("ComparisonTable", new ComparisonTableParams
+{
+    Title        = compTitle,
+    YourProduct  = "SyncTally",
+    Competitor   = "Other Tally users",
+    FootnoteDate = DateTime.Now.ToString("MMMM yyyy"),
+    Rows         = compRows
+})
+
 @if (Model.Faqs.Count > 0)
 {
     <section class="section alt">
@@ -143,7 +257,7 @@
 {
     <section class="section">
         <div class="container">
-            <h2 style="font-size:1.2rem">More in “@f.GroupTitle”</h2>
+            <h2 style="font-size:1.2rem">More in "@f.GroupTitle"</h2>
             <div class="related-grid">
                 @foreach (var r in Model.Related)
                 {

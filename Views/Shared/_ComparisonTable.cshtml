@@ -1,0 +1,81 @@
+@*
+    Partial View: _ComparisonTable.cshtml
+    Place in: Views/Shared/_ComparisonTable.cshtml
+
+    Usage — pass a ComparisonTableViewModel from your controller/view:
+
+        @await Html.PartialAsync("_ComparisonTable", Model.ComparisonTable)
+
+    Or inline with ViewData:
+
+        @{
+            var tableModel = new ComparisonTableViewModel
+            {
+                Title       = "What happens after the IRN is generated",
+                YourProduct = "SyncTally",
+                Competitor  = "Other Tally users",
+                FootnoteDate= "October 2026",
+                Rows = new List<ComparisonRow>
+                {
+                    new() { Feature = "...", Yours = "...", Theirs = "..." },
+                }
+            };
+        }
+        @await Html.PartialAsync("_ComparisonTable", tableModel)
+*@
+@model SyncTally.Web.ViewModels.ComparisonTableViewModel
+
+@if (Model != null)
+{
+    <section class="ct-section">
+        @if (!string.IsNullOrEmpty(Model.Title))
+        {
+            <h2 class="ct-title">@Model.Title</h2>
+        }
+
+        <div class="ct-wrapper">
+            <table class="ct-table" role="table">
+                <!-- ── HEADER ── -->
+                <thead>
+                    <tr>
+                        <th class="ct-th ct-th-feature" scope="col">What you need</th>
+                        <th class="ct-th ct-th-yours"   scope="col">@Model.YourProduct</th>
+                        <th class="ct-th ct-th-theirs"  scope="col">@Model.Competitor</th>
+                    </tr>
+                </thead>
+
+                <!-- ── ROWS ── -->
+                <tbody>
+                    @foreach (var row in Model.Rows)
+                    {
+                        <tr class="ct-row">
+                            <td class="ct-td ct-td-feature">@row.Feature</td>
+                            <td class="ct-td ct-td-yours">
+                                @if (!string.IsNullOrEmpty(row.YoursIcon))
+                                {
+                                    <span class="ct-icon" aria-hidden="true">@Html.Raw(row.YoursIcon)</span>
+                                }
+                                @row.Yours
+                            </td>
+                            <td class="ct-td ct-td-theirs">
+                                @if (!string.IsNullOrEmpty(row.TheirsIcon))
+                                {
+                                    <span class="ct-icon" aria-hidden="true">@Html.Raw(row.TheirsIcon)</span>
+                                }
+                                @row.Theirs
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.FootnoteDate))
+        {
+            <p class="ct-footnote">
+                Checked on @Model.FootnoteDate against the products most often compared with @Model.YourProduct.
+                We re-check this every fortnight, because products move.
+            </p>
+        }
+    </section>
+}
